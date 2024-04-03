@@ -27,21 +27,19 @@ export default function FormCliente() {
     return arrayData[2] + '/' + arrayData[1] + '/' + arrayData[0];
 }
 
-useEffect(() => {
-  if (state != null && state.id != null) {
-      axios.get("http://localhost:8080/api/cliente/" + state.id)
-.then((response) => {
+ useEffect(() => {
+        if (state != null && state.id != null) {
+            axios.get("http://localhost:8080/api/cliente/" + state.id)
+                .then((response) => {
                     setIdCliente(response.data.id)
                     setNome(response.data.nome)
                     setCPF(response.data.cpf)
-                    console.log(response.data.cpf)
-                    console.log(cpf)
                     setDataNascimento(formatarData(response.data.dataNascimento))
                     setFoneCelular(response.data.foneCelular)
                     setFoneFixo(response.data.foneFixo)
-      })
-  }
-}, [state])
+                })
+        }
+    }, [state])
 
 function salvar() {
 
@@ -54,12 +52,12 @@ function salvar() {
        }
        if (idCliente != null) { //Alteração:
            axios.put("http://localhost:8080/api/cliente/" + idCliente, clienteRequest)
-           .then((response) => { console.log('Cliente alterado com sucesso.')},navigate('/list-cliente'))
-           .catch((error) => { console.log('Erro ao alterar um cliente.') })
+           .then(response => { console.log('Cliente alterado com sucesso.',JSON.stringify(response,null,2))},setTimeout(navigate('/list-cliente'),2000))
+           .catch(error => { console.log('Erro ao alterar um cliente.',JSON.stringify(error,null,2)) })
        } else { //Cadastro:
            axios.post("http://localhost:8080/api/cliente", clienteRequest)
-           .then((response) => { console.log('Cliente cadastrado com sucesso.') },navigate('/list-cliente'))
-           .catch((error) => { console.log('Erro ao incluir o cliente.') })
+           .then((response) => { console.log('Cliente cadastrado com sucesso.',JSON.stringify(response,null,2)) },)
+           .catch((error) => { console.log('Erro ao incluir o cliente.',JSON.stringify(error,null,2)) })
        }
 }
 

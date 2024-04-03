@@ -1,13 +1,13 @@
 import React from 'react';
 import { Route, Routes } from "react-router-dom";
 
-import FormCliente from './views/cliente/FormCliente';
-import FormEntregador from './views/entregador/FormEntregador';
 import Home from './views/home/Home';
-import FormProduto from './views/produto/FormProduto';
+import FormCliente from './views/cliente/FormCliente';
 import ListCliente from './views/cliente/ListCliente';
-import ListProduto from './views/entregador/ListProduto';
-import ListEntregador from './views/produto/ListEntregador';
+import ListProduto from './views/produto/ListProduto';
+import ListEntregador from './views/entregador/ListEntregador';
+import FormProduto from './views/produto/FormProduto';
+import FormEntregador from './views/entregador/FormEntregador';
 
 function Rotas() {
     return (

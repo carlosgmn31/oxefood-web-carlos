@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputMask from 'react-input-mask';
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import MenuSistema from "../MenuSistema";
+import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const estados = [
     { key: '0', text: 'Acre', value: 'acre' },
@@ -16,7 +18,7 @@ export default function FormEntregador() {
     const [dataNascimento, setDataNascimento] = useState();
     const [foneCelular, setFoneCelular] = useState();
     const [foneFixo, setFoneFixo] = useState();
-    const [qtdEntregas, setQtdEntregas] = useState();
+    const [qtdEntregasRealizadas, setQtdEntregasRealizadas] = useState();
     const [valorFrete, setValorFrete] = useState();
     const [rua, setRua] = useState();
     const [numeroRua, setNumeroRua] = useState();
@@ -26,6 +28,76 @@ export default function FormEntregador() {
     const [uf, setUf] = useState();
     const [complemento, setComplemento] = useState();
     const [ativo, setAtivo] = useState();
+    const [idEntregador, setIdEntregador] = useState();
+    const { state } = useLocation();
+
+    function salvar() {
+
+        let entregadorRequest = {
+            nome: nome,
+            cpf: cpf,
+            dataNascimento: dataNascimento,
+            foneCelular: foneCelular,
+            foneFixo: foneFixo,
+            qtdEntregasRealizadas: qtdEntregasRealizadas,
+            valorFrete: valorFrete,
+            rua: rua,
+            numeroRua: numeroRua,
+            bairro: bairro,
+            cidade: cidade,
+            rg:rg,
+            cep: cep,
+            uf: uf,
+            complemento: complemento
+        }
+
+        if (idEntregador != null) { //Alteração:
+            axios.put("http://localhost:8080/api/entregador/" + idEntregador, entregadorRequest)
+                .then((response) => { console.log('Entregador alterado com sucesso.') })
+                .catch((error) => { console.log('Erro ao alter um entrgador.') })
+        } else { //Cadastro:
+            axios.post("http://localhost:8080/api/entregador", entregadorRequest)
+                .then((response) => { console.log('Entregador cadastrado com sucesso.') })
+                .catch((error) => { console.log('Erro ao incluir o entregador.') })
+        }
+        console.log(entregadorRequest);
+    }
+
+    function formatarData(dataParam) {
+
+        if (dataParam === null || dataParam === '' || dataParam === undefined) {
+            return ''
+        }
+
+        let arrayData = dataParam.split('-');
+        return arrayData[2] + '/' + arrayData[1] + '/' + arrayData[0];
+    }
+
+    useEffect(() => {
+        if (state != null && state.id != null) {
+            axios.get("http://localhost:8080/api/entregador/" + state.id)
+                .then((response) => {
+                    setIdEntregador(response.data.id)
+                    setNome(response.data.nome)
+                    setCpf(response.data.cpf)
+                    setRg(response.data.rg)
+                    setDataNascimento(formatarData(response.data.dataNascimento))
+                    setFoneCelular(response.data.foneCelular)
+                    setFoneFixo(response.data.foneFixo)
+                    setQtdEntregasRealizadas(response.data.qtdEntregasRealizadas)
+                    setValorFrete(response.data.valorFrete)
+                    setRua(response.data.rua)
+                    setNumeroRua(response.data.numeroRua)
+                    setBairro(response.data.bairro)
+                    setCidade(response.data.cidade)
+                    setCep(response.data.cep)
+                    setUf(response.data.uf)
+                    setComplemento(response.data.complemento)
+                    console.log(response.data)
+                }
+                )
+        }
+    }, [state])
 
 
 
@@ -66,11 +138,12 @@ export default function FormEntregador() {
                                     fluid
                                     label='CPF'
                                     width={6}
-                                    value={cpf}
-                                    onChange={e => setCpf(e.target.value)}>
+                                    >
                                     <InputMask
                                         required
                                         mask="999.999.999-99"
+                                        value={cpf}
+                                    onChange={e => setCpf(e.target.value)}
                                     />
 
                                 </Form.Input>
@@ -102,12 +175,13 @@ export default function FormEntregador() {
                                     fluid
                                     label='Fone celular'
                                     width={6}
-                                    value={foneCelular}
-                                    onChange={e => setFoneCelular(e.target.value)}
+                                    
                                 >
                                     <InputMask
                                         required
                                         mask="(99) 9999.9999"
+                                        value={foneCelular}
+                                    onChange={e => setFoneCelular(e.target.value)}
                                     />
 
                                 </Form.Input>
@@ -116,11 +190,12 @@ export default function FormEntregador() {
                                     fluid
                                     label='Fone Fixo'
                                     width={6}
-                                    value={foneFixo}
-                                    onChange={e => setFoneFixo(e.target.value)}
+                                    
                                 >
                                     <InputMask
                                         mask="(99) 9999.9999"
+                                        value={foneFixo}
+                                    onChange={e => setFoneFixo(e.target.value)}
                                     />
                                 </Form.Input>
 
@@ -128,8 +203,8 @@ export default function FormEntregador() {
                                     fluid
                                     label='Entregas Realizadas'
                                     width={4}
-                                    value={qtdEntregas}
-                                    onChange={e => setQtdEntregas(e.target.value)}
+                                    value={qtdEntregasRealizadas}
+                                    onChange={e => setQtdEntregasRealizadas(e.target.value)}
                                 >
 
                                 </Form.Input>
@@ -192,11 +267,12 @@ export default function FormEntregador() {
                                     fluid
                                     label='CEP'
                                     width={9}
-                                    value={cep}
-                                    onChange={e => setCep(e.target.value)}>
+                                    >
                                     <InputMask
                                         required
                                         mask="99.999-9  99"
+                                        value={cep}
+                                    onChange={e => setCep(e.target.value)}
                                     />
                                 </Form.Input>
 
@@ -223,7 +299,7 @@ export default function FormEntregador() {
 
                         <div style={{ marginTop: '4%' }}>
 
-                            <Button
+                        <Button
                                 type="button"
                                 inverted
                                 circular
@@ -232,7 +308,8 @@ export default function FormEntregador() {
                                 color='orange'
                             >
                                 <Icon name='reply' />
-                                Voltar
+                                <Link to={'/list-entregador'}>Voltar</Link>
+
                             </Button>
 
                             <Button
@@ -242,6 +319,7 @@ export default function FormEntregador() {
                                 labelPosition='left'
                                 color='blue'
                                 floated='right'
+                                onClick={() => salvar()}
                             >
                                 <Icon name='save' />
                                 Salvar
