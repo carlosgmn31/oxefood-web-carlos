@@ -28,11 +28,11 @@ export default function FormCategoriaProduto() {
             }
             if (idCategoriaProduto != null) { //Alteração:
                 axios.put("http://localhost:8080/api/categoriaproduto/" + idCategoriaProduto, categoriaProdutoRequest)
-                .then(response => { console.log('Categoria de produto alterada com sucesso.',JSON.stringify(response,null,2))},/* setTimeout(navigate('/list-categoria-produto'),5000) */)
+                .then(response => { console.log('Categoria de produto alterada com sucesso.',JSON.stringify(response,null,2))},setTimeout(navigate('/list-categoria-produto'),5000))
                 .catch(error => { console.log('Erro ao alterar uma categoria de produto.',JSON.stringify(error,null,2)) })
             } else { //Cadastro:
                 axios.post("http://localhost:8080/api/categoriaproduto", categoriaProdutoRequest)
-                .then((response) => { console.log('Categoria de produto cadastrada com sucesso.',JSON.stringify(response,null,2)) },/* setTimeout(navigate('/list-categoria-produto'),5000) */)
+                .then((response) => { console.log('Categoria de produto cadastrada com sucesso.',JSON.stringify(response,null,2)) },setTimeout(navigate('/list-categoria-produto'),5000))
                 .catch((error) => { console.log('Erro ao incluir a categoria de produto.',JSON.stringify(error,null,2)) })
             }
         }

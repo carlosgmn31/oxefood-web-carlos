@@ -19,14 +19,7 @@ export default function ListProduto() {
       setLista(response.data)
     })
   }
-  function formatarData(dataParam) {
-    if (dataParam === null || dataParam === '' || dataParam === undefined) {
-      return ''
-    }
 
-    let arrayData = dataParam.split('-')
-    return arrayData[2] + '/' + arrayData[1] + '/' + arrayData[0]
-  }
   function confirmaRemover(id) {
     setOpenModal(true)
     setIdRemover(id)
@@ -79,26 +72,28 @@ export default function ListProduto() {
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>Código</Table.HeaderCell>
+                  <Table.HeaderCell>Categoria</Table.HeaderCell>
                   <Table.HeaderCell>Título</Table.HeaderCell>
                   <Table.HeaderCell>Descrição</Table.HeaderCell>
-                  <Table.HeaderCell>Valor Unitario</Table.HeaderCell>
-                  <Table.HeaderCell>Tempo Entrega Mínimo</Table.HeaderCell>
-                  <Table.HeaderCell textAlign='center'>
-                    tempoEntregaMaximo
-                  </Table.HeaderCell>
+                  <Table.HeaderCell>Valor Unitário</Table.HeaderCell>
+                  <Table.HeaderCell>Tempo Mínimo de Entrega</Table.HeaderCell>
+                  <Table.HeaderCell>Tempo Máximo de Entrega</Table.HeaderCell>
+                  <Table.HeaderCell textAlign='center' width={2}>Ações</Table.HeaderCell>
                 </Table.Row>
+
               </Table.Header>
 
               <Table.Body>
                 {lista.map((produto) => (
-                  <Table.Row key={produto}>
+                  <Table.Row key={produto.id}>
                     <Table.Cell>{produto.codigo}</Table.Cell>
+                    <Table.Cell>{produto && produto.categoria && produto.categoria.descricao ? produto.categoria.descricao : ""}
+                    </Table.Cell>
                     <Table.Cell>{produto.titulo}</Table.Cell>
                     <Table.Cell>{produto.descricao}</Table.Cell>
-                    <Table.Cell>
-                      R$ {produto.valorUnitario.toFixed(2)}
-                    </Table.Cell>
+                    <Table.Cell>{produto.valorUnitario}</Table.Cell>
                     <Table.Cell>{produto.tempoEntregaMinimo}</Table.Cell>
+                    <Table.Cell>{produto.tempoEntregaMaximo}</Table.Cell>
                     <Table.Cell textAlign='center'>
                       <Button
                         inverted
@@ -107,7 +102,7 @@ export default function ListProduto() {
                         title='Clique aqui para editar os dados deste produto'
                         icon
                       >
-                        <Icon name='edit' />
+                        <Link to="/form-produto" state={{id: produto.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
                       </Button>{' '}
                       &nbsp;
                       <Button

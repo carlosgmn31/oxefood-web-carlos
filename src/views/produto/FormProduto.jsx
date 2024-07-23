@@ -13,18 +13,21 @@ export default function FormProduto() {
     const [codigoProduto, setCodigoProduto] = useState();
     const [descricao, setDescricao] = useState();
     const [valorUnitario, setValorUnitario] = useState();
-    const [tempoMinimo, setTempoMinimo] = useState();
-    const [tempoMaximo, setTempoMaximo] = useState();
-
+    const [tempoEntregaMinimo, setTempoEntregaMinimo] = useState();
+    const [tempoEntregaMaximo, setTempoEntregaMaximo] = useState();
+    const [listaCategoria, setListaCategoria] = useState([]);
+    const [idCategoria, setIdCategoria] = useState();
+ 
     function salvar() {
 
         let produtoRequest = {
+            idCategoria: idCategoria,
             titulo: titulo,
-            codigoProduto: codigoProduto,
+            codigo: codigoProduto,
             descricao: descricao,
             valorUnitario: valorUnitario,
-            tempoMinimo: tempoMinimo,
-            tempoMaximo: tempoMaximo    
+            tempoEntregaMinimo: tempoEntregaMinimo,
+            tempoEntregaMaximo: tempoEntregaMaximo    
         }
         if (idProduto != null) { //Alteração:
             axios.put("http://localhost:8080/api/produto/" + idProduto, produtoRequest)
@@ -46,14 +49,22 @@ export default function FormProduto() {
                 .then((response) => {
                     setIdProduto(response.data.id)
                     setTitulo(response.data.titulo)
-                    setCodigoProduto(response.data.codigoProduto)
+                    setCodigoProduto(response.data.codigo)
                     setDescricao(response.data.descricao)
                     setValorUnitario(response.data.valorUnitario)
-                    setTempoMinimo(response.data.tempoMinimo)
-                    setTempoMaximo(response.data.tempoMaximo)
+                    setTempoEntregaMinimo(response.data.tempoEntregaMinimo)
+                    setTempoEntregaMaximo(response.data.tempoEntregaMaximo)
+                    setIdCategoria(response.data.categoria.id)
                     
                 })
         }
+
+        axios.get("http://localhost:8080/api/categoriaproduto")
+        .then((response) => {
+            const dropDownCategorias = response.data.map(c => ({ text: c.descricao, value: c.id }));
+            setListaCategoria(dropDownCategorias);
+        })
+
     }, [state])
 
 
@@ -99,7 +110,21 @@ export default function FormProduto() {
                                 </Form.Input>
 
                             </Form.Group>
+                            <Form.Group>
+                            <Form.Select
+                                required
+                                fluid
+                                tabIndex='3'
+                                placeholder='Selecione'
+                                label='Categoria'
+                                options={listaCategoria}
+                                value={idCategoria}
+                                onChange={(e,{value}) => {
+                                setIdCategoria(value)
+                            }}
+                            />
 
+                            </Form.Group>
                             <FormTextArea label='Descrição' placeholder='Informe a descrição do produto' value={descricao}
                                 onChange={e => setDescricao(e.target.value)} />
 
@@ -122,8 +147,8 @@ export default function FormProduto() {
                                     label='Tempo de Entrega Mínimo em Minutos'
                                     width={6}
                                     placeholder='30'
-                                    value={tempoMinimo}
-                                    onChange={e => setTempoMinimo(e.target.value)}
+                                    value={tempoEntregaMinimo}
+                                    onChange={e => setTempoEntregaMinimo(e.target.value)}
                                 >
 
                                 </Form.Input>
@@ -133,8 +158,8 @@ export default function FormProduto() {
                                     label='Tempo de Entrega Máximo em Minutos'
                                     width={6}
                                     placeholder='40'
-                                    value={tempoMaximo}
-                                    onChange={e => setTempoMaximo(e.target.value)}
+                                    value={tempoEntregaMaximo}
+                                    onChange={e => setTempoEntregaMaximo(e.target.value)}
                                 >
                                 </Form.Input>
 
