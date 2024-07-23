@@ -34,9 +34,15 @@ export default function MenuSistema(props) {
         />
         <Menu.Item
           name='promocão'
-          active={props.tela === 'promocao'}
+          active={props.tela === 'promoçãoo'}
           as={Link}
           to='/list-promocao'
+        />
+                <Menu.Item
+          name='categoria de produto'
+          active={props.tela === 'categoria-produto'}
+          as={Link}
+          to='/list-categoria-produto'
         />
       </Menu>
     </>
