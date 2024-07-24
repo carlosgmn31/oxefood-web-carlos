@@ -70,9 +70,9 @@ export default function ListCliente () {
         }
     }
     const handleListarEnderecosClick = (cliente) => {
-        setClienteId(cliente.id); // Atualiza o clienteId imediatamente
-        selecionarCliente(cliente); // Chama selecionarCliente passando cliente
-        setOpenEnderecosModal(true); // Abre o modal imediatamente após
+        setClienteId(cliente.id); 
+        selecionarCliente(cliente); 
+        setOpenEnderecosModal(true); 
     };
     const selecionarCliente = (cliente) => {
         setClienteSelecionado(cliente); // Define o cliente selecionado
@@ -142,7 +142,7 @@ return(
                                         color='green'
                                         title='Clique aqui para editar os dados deste cliente'
                                         icon>
-                                            <Link to="/form-cliente" state={{id: cliente.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
+                                            <Link to="/form-cliente" state={{ id: cliente.id, enderecos: cliente.enderecos[0] }} style={{color: 'green'}}> <Icon name='edit' /> </Link>
                                     </Button> &nbsp; 
                                       <Button
                                                inverted
