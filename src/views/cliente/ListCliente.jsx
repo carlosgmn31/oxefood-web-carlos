@@ -12,7 +12,7 @@ export default function ListCliente () {
    const [idRemover, setIdRemover] = useState();
    const [clienteId, setClienteId] = useState();
    const [clienteSelecionado, setClienteSelecionado] = useState();
-
+   const [entidade, setEntidade] = useState();
    useEffect(() => {
        carregarLista();
        
@@ -34,16 +34,27 @@ export default function ListCliente () {
     let arrayData = dataParam.split('-');
     return arrayData[2] + '/' + arrayData[1] + '/' + arrayData[0];
 }
-    function confirmaRemover(id) {
+    function confirmaRemover(id,entidade) {
         setOpenModal(true)
         setIdRemover(id)
+        setEntidade(entidade)
     }
-    async function remover() {
+    async function remover(entidade) {
+        let rota = ""
+        // eslint-disable-next-line default-case
+        switch (entidade) {
+            case "cliente":
+                rota = "http://localhost:8080/api/cliente/"
+                break;
+            case "endereco":
+                rota = "http://localhost:8080/api/cliente/endereco/"
+                break;
+        }
 
-        await axios.delete('http://localhost:8080/api/cliente/' + idRemover)
+        await axios.delete(rota + idRemover)
         .then((response) => {
   
-            console.log('Cliente removido com sucesso.')
+            console.log(entidade + ' removido(a) com sucesso.')
   
             axios.get("http://localhost:8080/api/cliente")
             .then((response) => {
@@ -54,6 +65,9 @@ export default function ListCliente () {
             console.log('Erro ao remover um cliente.')
         })
         setOpenModal(false)
+        if(openEnderecosModal){
+            setOpenEnderecosModal(false)
+        }
     }
     const handleListarEnderecosClick = (cliente) => {
         setClienteId(cliente.id); // Atualiza o clienteId imediatamente
@@ -135,7 +149,7 @@ return(
                                                circular
                                                color='red'
                                                title='Clique aqui para remover este cliente'
-                                               onClick={e => confirmaRemover(cliente.id)}
+                                               onClick={e => confirmaRemover(cliente.id,"cliente")}
                                                icon>
                                                    <Icon name='trash' />
                                            </Button>
@@ -165,7 +179,7 @@ return(
                             <Button basic color='red' inverted onClick={() => setOpenModal(false)}>
                                 <Icon name='remove' /> Não
                             </Button>
-                            <Button color='green' inverted onClick={() => remover()}>
+                            <Button color='green' inverted onClick={() => remover(entidade)}>
                                 <Icon name='checkmark' /> Sim
                             </Button>
                         </Modal.Actions>
@@ -192,6 +206,7 @@ return(
                                 <Table.HeaderCell>Cidade</Table.HeaderCell>
                                 <Table.HeaderCell>Estado</Table.HeaderCell>
                                 <Table.HeaderCell>Complemento</Table.HeaderCell>
+                                <Table.HeaderCell textAlign='center'>Ações</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
@@ -204,6 +219,39 @@ return(
                                     <Table.Cell>{endereco.cidade}</Table.Cell>
                                     <Table.Cell>{endereco.estado}</Table.Cell>
                                     <Table.Cell>{endereco.complemento}</Table.Cell>
+                                    <Table.Cell textAlign='center'>
+                                         {/*    <Button
+                                                inverted
+                                                circular
+                                                color='green'
+                                                title='Clique aqui para editar os dados deste cliente'
+                                                icon>
+                                                <Link to="/form-cliente" state={{ id: cliente.id }} style={{ color: 'green' }}> <Icon name='edit' /> </Link>
+                                            </Button> &nbsp; */}
+
+                                            <Button
+                                                inverted
+                                                circular
+                                                color='red'
+                                                title='Clique aqui para remover este cliente'
+                                                icon
+                                                onClick={() => confirmaRemover(endereco.id,"endereco")}>
+                                                <Icon name='trash' />
+                                            </Button>&nbsp;
+
+                                            {/* <Button
+                                                inverted
+                                                circular
+                                                color='red'
+                                                title='Adicionar Endereços'
+                                                icon
+                                                onClick={() => {
+                                                    setClienteSelecionado(cliente.id);
+                                                    setOpenEnderecoModal(true);
+                                                }}>
+                                                <Icon name='plus' />
+                                            </Button> */}
+                                            </Table.Cell>
                                 </Table.Row>
                             ))}
                         </Table.Body>
