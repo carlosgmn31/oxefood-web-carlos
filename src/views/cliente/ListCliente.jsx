@@ -8,10 +8,14 @@ export default function ListCliente () {
 
    const [lista, setLista] = useState([]);
    const [openModal, setOpenModal] = useState(false);
+   const [openEnderecosModal, setOpenEnderecosModal] = useState(false);
    const [idRemover, setIdRemover] = useState();
+   const [clienteId, setClienteId] = useState();
+   const [clienteSelecionado, setClienteSelecionado] = useState();
 
    useEffect(() => {
        carregarLista();
+       
    }, [])
 
    function carregarLista() {
@@ -51,7 +55,14 @@ export default function ListCliente () {
         })
         setOpenModal(false)
     }
- 
+    const handleListarEnderecosClick = (cliente) => {
+        setClienteId(cliente.id); // Atualiza o clienteId imediatamente
+        selecionarCliente(cliente); // Chama selecionarCliente passando cliente
+        setOpenEnderecosModal(true); // Abre o modal imediatamente após
+    };
+    const selecionarCliente = (cliente) => {
+        setClienteSelecionado(cliente); // Define o cliente selecionado
+    };
 return(
     <div>
         <MenuSistema />
@@ -99,6 +110,18 @@ return(
                                   <Table.Cell>{cliente.foneFixo}</Table.Cell>
                                   <Table.Cell textAlign='center'>
 
+                                   <Button
+                                                inverted
+                                                circular
+                                                color='orange'
+                                                title='Listar Endereços'
+                                                icon
+                                                onClick={() => {
+                                                handleListarEnderecosClick(cliente)
+                                                }}>
+                                                <Icon name='map' />
+                                            </Button>&nbsp;
+ 
                                   <Button
                                         inverted
                                         circular
@@ -106,7 +129,7 @@ return(
                                         title='Clique aqui para editar os dados deste cliente'
                                         icon>
                                             <Link to="/form-cliente" state={{id: cliente.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
-                                    </Button> &nbsp;
+                                    </Button> &nbsp; 
                                       <Button
                                                inverted
                                                circular
@@ -147,6 +170,52 @@ return(
                             </Button>
                         </Modal.Actions>
                     </Modal>
+                    <Modal
+            basic
+            onClose={() => setOpenEnderecosModal(false)}
+            onOpen={selecionarCliente}  // Ao abrir o modal, selecione o cliente
+            open={openEnderecosModal}
+        >
+            <Header icon>
+                <Icon name='address book' />
+                Endereços do Cliente
+            </Header>
+            <Modal.Content>
+                {clienteSelecionado && (
+                    <Table celled>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Rua</Table.HeaderCell>
+                                <Table.HeaderCell>Número</Table.HeaderCell>
+                                <Table.HeaderCell>Bairro</Table.HeaderCell>
+                                <Table.HeaderCell>CEP</Table.HeaderCell>
+                                <Table.HeaderCell>Cidade</Table.HeaderCell>
+                                <Table.HeaderCell>Estado</Table.HeaderCell>
+                                <Table.HeaderCell>Complemento</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {clienteSelecionado.enderecos.map(endereco => (
+                                <Table.Row key={endereco.id}>
+                                    <Table.Cell>{endereco.rua}</Table.Cell>
+                                    <Table.Cell>{endereco.numero}</Table.Cell>
+                                    <Table.Cell>{endereco.bairro}</Table.Cell>
+                                    <Table.Cell>{endereco.cep}</Table.Cell>
+                                    <Table.Cell>{endereco.cidade}</Table.Cell>
+                                    <Table.Cell>{endereco.estado}</Table.Cell>
+                                    <Table.Cell>{endereco.complemento}</Table.Cell>
+                                </Table.Row>
+                            ))}
+                        </Table.Body>
+                    </Table>
+                )}
+            </Modal.Content>
+            <Modal.Actions>
+                <Button color='red' onClick={() => setOpenEnderecosModal(false)}>
+                    <Icon name='remove' /> Fechar
+                </Button>
+            </Modal.Actions>
+        </Modal>
 
             </div>
        </div>
